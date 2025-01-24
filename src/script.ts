@@ -1,13 +1,15 @@
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT;
 const params = new URLSearchParams(window.location.search);
 const code = params.get("code");
+console.log(code);
 
 if (!code) {
-    console.log(clientId);
     redirectToAuthCodeFlow(clientId);
 } else {
     const accessToken = await getAccessToken(clientId, code);
     const profile = await fetchProfile(accessToken);
+    const savedSongs = await fetchSavedTracks(accessToken);
+    console.log(savedSongs);
     populateUI(profile);
 }
 
@@ -21,7 +23,7 @@ export async function redirectToAuthCodeFlow(clientId: string) {
     params.append("client_id", clientId);
     params.append("response_type", "code");
     params.append("redirect_uri", "http://localhost:5173/callback");
-    params.append("scope", "user-read-private user-read-email");
+    params.append("scope", "user-read-private user-read-email user-library-read");
     params.append("code_challenge_method", "S256");
     params.append("code_challenge", challenge);
 
@@ -64,11 +66,22 @@ export async function getAccessToken(clientId: string, code: string): Promise<st
     });
 
     const { access_token } = await result.json();
+    console.log(access_token);
     return access_token;
 }
 
 async function fetchProfile(token: string): Promise<any> {
     const result = await fetch("https://api.spotify.com/v1/me", {
+        method: "GET", headers: { Authorization: `Bearer ${token}` }
+    });
+
+    return await result.json();
+}
+
+async function fetchSavedTracks(token: string): Promise<any> {
+    const params = new URLSearchParams();
+    params.append("limit", "50");
+    const result = await fetch(`https://api.spotify.com/v1/me/tracks?${params.toString()}`, {
         method: "GET", headers: { Authorization: `Bearer ${token}` }
     });
 

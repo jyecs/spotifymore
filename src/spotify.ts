@@ -1,7 +1,6 @@
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT;
 const params = new URLSearchParams(window.location.search);
 const code = params.get("code");
-console.log(code);
 
 if (!code) {
     redirectToAuthCodeFlow(clientId);
@@ -10,7 +9,6 @@ if (!code) {
     const profile = await fetchProfile(accessToken);
     const savedSongs = await fetchSavedTracks(accessToken);
     console.log(savedSongs);
-    populateUI(profile);
 }
 
 export async function redirectToAuthCodeFlow(clientId: string) {
@@ -66,7 +64,6 @@ export async function getAccessToken(clientId: string, code: string): Promise<st
     });
 
     const { access_token } = await result.json();
-    console.log(access_token);
     return access_token;
 }
 
@@ -78,28 +75,33 @@ async function fetchProfile(token: string): Promise<any> {
     return await result.json();
 }
 
-async function fetchSavedTracks(token: string): Promise<any> {
+async function fetchSavedTracks(token: string) {
     const params = new URLSearchParams();
+    let items = [];
     params.append("limit", "50");
-    const result = await fetch(`https://api.spotify.com/v1/me/tracks?${params.toString()}`, {
+    let result = await fetch(`https://api.spotify.com/v1/me/tracks?${params.toString()}`, {
         method: "GET", headers: { Authorization: `Bearer ${token}` }
     });
 
-    return await result.json();
+    result = await result.json();
+    const nextURL = result["next"];
+    if (nextURL !== null) {
+        await fetchNextSavedTracks(token, nextURL, items);
+    }
+    items.push(result);
+    return items;
 }
 
-function populateUI(profile: any) {
-    document.getElementById("displayName")!.innerText = profile.display_name;
-    if (profile.images[0]) {
-        const profileImage = new Image(200, 200);
-        profileImage.src = profile.images[0].url;
-        document.getElementById("avatar")!.appendChild(profileImage);
+async function fetchNextSavedTracks(token: string, URL: string, results: Array<any>): Promise<any> {
+    let result = await fetch(`${URL}`, {
+        method: "GET", headers: { Authorization: `Bearer ${token}` }
+    });
+
+    result = await result.json();
+    const nextURL = result["next"];
+    if (nextURL !== null) {
+        await fetchNextSavedTracks(token, nextURL, results);
     }
-    document.getElementById("id")!.innerText = profile.id;
-    document.getElementById("email")!.innerText = profile.email;
-    document.getElementById("uri")!.innerText = profile.uri;
-    document.getElementById("uri")!.setAttribute("href", profile.external_urls.spotify);
-    document.getElementById("url")!.innerText = profile.href;
-    document.getElementById("url")!.setAttribute("href", profile.href);
-    document.getElementById("imgUrl")!.innerText = profile.images[0]?.url ?? '(no profile image)';
+
+    results.push(result);
 }

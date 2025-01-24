@@ -1,8 +1,9 @@
-const clientId = "your_client_id";
+const clientId = import.meta.env.VITE_SPOTIFY_CLIENT;
 const params = new URLSearchParams(window.location.search);
 const code = params.get("code");
 
 if (!code) {
+    console.log(clientId);
     redirectToAuthCodeFlow(clientId);
 } else {
     const accessToken = await getAccessToken(clientId, code);

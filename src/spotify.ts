@@ -1,17 +1,18 @@
+function spotify() {
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT;
 const params = new URLSearchParams(window.location.search);
 const code = params.get("code");
 
-if (!code) {
+/*if (!code) {
     redirectToAuthCodeFlow(clientId);
 } else {
     const accessToken = await getAccessToken(clientId, code);
     const profile = await fetchProfile(accessToken);
     const savedSongs = await fetchSavedTracks(accessToken);
     console.log(savedSongs);
-}
+} */
 
-export async function redirectToAuthCodeFlow(clientId: string) {
+async function redirectToAuthCodeFlow(clientId: string) {
     const verifier = generateCodeVerifier(128);
     const challenge = await generateCodeChallenge(verifier);
 
@@ -47,7 +48,7 @@ async function generateCodeChallenge(codeVerifier: string) {
         .replace(/=+$/, '');
 }
 
-export async function getAccessToken(clientId: string, code: string): Promise<string> {
+async function getAccessToken(clientId: string, code: string): Promise<string> {
     const verifier = localStorage.getItem("verifier");
 
     const params = new URLSearchParams();
@@ -105,3 +106,21 @@ async function fetchNextSavedTracks(token: string, URL: string, results: Array<a
 
     results.push(result);
 }
+
+async function getSongs(code: string) {
+    const accessToken = await getAccessToken(clientId, code);
+    const songs = await fetchSavedTracks(accessToken);
+    return songs;
+}
+
+function processSongs(songs) {
+}
+
+async function getAuthorization() {
+    await redirectToAuthCodeFlow(clientId);
+}
+
+
+return {getSongs, getAuthorization}
+}
+export default spotify

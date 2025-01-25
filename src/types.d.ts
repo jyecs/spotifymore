@@ -1,6 +1,3 @@
-/// <reference types="vite/client" />
-import { ScriptHTMLAttributes } from "react";
-
 interface FetchedSongs {
     href: string;
     limit: number;

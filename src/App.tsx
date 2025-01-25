@@ -14,12 +14,10 @@ function App() {
     const code = params.get("code");
     async function callSpotify() {
       const songs = await spotifyRef.current.getSongs(code!)
-      console.log(songs);
     }
-    if (!code) {
-      console.log("There is nothing")
-    } else {
-      callSpotify()
+    if (code) {
+      console.log("We have a code");
+      callSpotify();
     }
   },[])
 

@@ -1,3 +1,4 @@
+import { Track,FetchedSongs} from "./vite-env";
 function spotify() {
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT;
 const params = new URLSearchParams(window.location.search);
@@ -65,6 +66,7 @@ async function getAccessToken(clientId: string, code: string): Promise<string> {
     });
 
     const { access_token } = await result.json();
+    console.log(access_token);
     return access_token;
 }
 
@@ -78,13 +80,9 @@ async function fetchProfile(token: string): Promise<any> {
 
 async function fetchSavedTracks(token: string) {
     const params = new URLSearchParams();
-    let items = [];
+    let items = new Array<FetchedSongs>;
     params.append("limit", "50");
-    let result = await fetch(`https://api.spotify.com/v1/me/tracks?${params.toString()}`, {
-        method: "GET", headers: { Authorization: `Bearer ${token}` }
-    });
-
-    result = await result.json();
+    const result = await fetchTracks(token, `https://api.spotify.com/v1/me/tracks?${params.toString()}`);
     const nextURL = result["next"];
     if (nextURL !== null) {
         await fetchNextSavedTracks(token, nextURL, items);
@@ -93,12 +91,8 @@ async function fetchSavedTracks(token: string) {
     return items;
 }
 
-async function fetchNextSavedTracks(token: string, URL: string, results: Array<any>): Promise<any> {
-    let result = await fetch(`${URL}`, {
-        method: "GET", headers: { Authorization: `Bearer ${token}` }
-    });
-
-    result = await result.json();
+async function fetchNextSavedTracks(token: string, URL: string, results: Array<FetchedSongs>): Promise<any> {
+    const result = await fetchTracks(token, URL);
     const nextURL = result["next"];
     if (nextURL !== null) {
         await fetchNextSavedTracks(token, nextURL, results);
@@ -107,13 +101,24 @@ async function fetchNextSavedTracks(token: string, URL: string, results: Array<a
     results.push(result);
 }
 
+async function fetchTracks(token: string, URL: string): Promise<FetchedSongs> {
+    let result = await fetch(URL, {
+        method: "GET", headers: { Authorization: `Bearer ${token}`}
+    })
+
+    return await result.json();
+}
+
 async function getSongs(code: string) {
     const accessToken = await getAccessToken(clientId, code);
     const songs = await fetchSavedTracks(accessToken);
-    return songs;
+    processSongs(songs);
 }
 
-function processSongs(songs) {
+function processSongs(ListOfTracks: Array<FetchedSongs>) {
+    ListOfTracks.forEach((list) => {
+        console.log(list);
+    })
 }
 
 async function getAuthorization() {

@@ -1,4 +1,4 @@
-import { Track,FetchedSongs} from "./vite-env";
+import { Track,FetchedSongs, SavedTrackObject} from "./vite-env";
 function spotify() {
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT;
 const params = new URLSearchParams(window.location.search);
@@ -80,7 +80,7 @@ async function fetchProfile(token: string): Promise<any> {
 
 async function fetchSavedTracks(token: string) {
     const params = new URLSearchParams();
-    let items = new Array<FetchedSongs>;
+    let items = new Array<FetchedSongs>();
     params.append("limit", "50");
     const result = await fetchTracks(token, `https://api.spotify.com/v1/me/tracks?${params.toString()}`);
     const nextURL = result["next"];
@@ -111,14 +111,22 @@ async function fetchTracks(token: string, URL: string): Promise<FetchedSongs> {
 
 async function getSongs(code: string) {
     const accessToken = await getAccessToken(clientId, code);
-    const songs = await fetchSavedTracks(accessToken);
-    processSongs(songs);
+    const tracks = await fetchSavedTracks(accessToken);
+    const listOfAllTracks = processTracks(tracks);
+    return listOfAllTracks;
 }
 
-function processSongs(ListOfTracks: Array<FetchedSongs>) {
-    ListOfTracks.forEach((list) => {
-        console.log(list);
+function processTracks(ListOfTracks: Array<FetchedSongs>) {
+    const allSongs = new Array<Track>();
+    ListOfTracks.forEach((list: FetchedSongs) => {
+        const tracks = list.items;
+        tracks.forEach((trackObj: SavedTrackObject) => {
+            const track = trackObj.track;
+            allSongs.push(track);
+        })
     })
+
+    return allSongs;
 }
 
 async function getAuthorization() {

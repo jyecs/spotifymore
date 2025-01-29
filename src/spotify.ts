@@ -109,14 +109,14 @@ async function fetchTracks(token: string, URL: string): Promise<FetchedSongs> {
     return await result.json();
 }
 
-async function getSongs(code: string) {
+async function getSongs(code: string): Promise<Track[]> {
     const accessToken = await getAccessToken(clientId, code);
     const tracks = await fetchSavedTracks(accessToken);
     const listOfAllTracks = processTracks(tracks);
     return listOfAllTracks;
 }
 
-function processTracks(ListOfTracks: Array<FetchedSongs>) {
+function processTracks(ListOfTracks: Array<FetchedSongs>): Track[] {
     const allSongs = new Array<Track>();
     ListOfTracks.forEach((list: FetchedSongs) => {
         const tracks = list.items;
@@ -129,11 +129,23 @@ function processTracks(ListOfTracks: Array<FetchedSongs>) {
     return allSongs;
 }
 
+function getAllTracklistArtists(tracks: Track[]): Set<string> {
+    const artists = new Set<string>();
+    tracks.forEach((track: Track) => {
+        const trackArtists = track.artists;
+        trackArtists.forEach((artist: SimplifiedArtistObject) => {
+            artists.add(artist.name);
+        })
+    })
+
+    return artists;
+}
+
 async function getAuthorization() {
     await redirectToAuthCodeFlow(clientId);
 }
 
 
-return {getSongs, getAuthorization}
+return {getSongs, getAuthorization, getAllTracklistArtists}
 }
 export default spotify

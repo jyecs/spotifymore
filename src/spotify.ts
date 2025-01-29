@@ -129,16 +129,33 @@ function processTracks(ListOfTracks: Array<FetchedSongs>): Track[] {
     return allSongs;
 }
 
-function getAllTracklistArtists(tracks: Track[]): Set<string> {
-    const artists = new Set<string>();
+function getAllTracklistArtists(tracks: Track[]): Map<string,string> {
+    const artists = new Map<string,string>();
     tracks.forEach((track: Track) => {
         const trackArtists = track.artists;
         trackArtists.forEach((artist: SimplifiedArtistObject) => {
-            artists.add(artist.name);
+            artists.set(artist.name, artist.id);
         })
     })
-
     return artists;
+}
+
+function convertArtistsToCallableArray(artistIDs: IterableIterator<string>) {
+    let arrayOfArtists = new Array<string>();
+    let concatedArtists = new Array<string>();
+    for (const id in artistIDs) {
+        if (arrayOfArtists.length === 50) { 
+            concatedArtists.push(arrayOfArtists.toString());
+            arrayOfArtists = [];
+        }
+        arrayOfArtists.push(id);
+    }
+    if (arrayOfArtists.length > 0) {
+        concatedArtists.push(arrayOfArtists.toString());
+    }
+
+    console.log(concatedArtists);
+    return concatedArtists;
 }
 
 async function getAuthorization() {
@@ -146,6 +163,6 @@ async function getAuthorization() {
 }
 
 
-return {getSongs, getAuthorization, getAllTracklistArtists}
+return {getSongs, getAuthorization, getAllTracklistArtists, convertArtistsToCallableArray}
 }
 export default spotify

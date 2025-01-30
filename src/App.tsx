@@ -15,9 +15,12 @@ function App() {
     const code = params.get("code");
     if (code) {
       async function getAccess() {
+        console.log("Get Access Called")
         const token = await spotifyRef.current.getAccessToken(code!)
-        accessRef.current = token;
-        setAccessToken(token);
+        if (token) {
+          accessRef.current = token;
+          setAccessToken(token);
+        }
       }
       getAccess();
     }
@@ -45,9 +48,9 @@ function App() {
   async function handleClickTest(e: MouseEvent) {
     const artistIterator = spotifyRef.current.getAllTracklistArtists(trackList!).values();
     const artistList = spotifyRef.current.convertArtistsToCallableArray(artistIterator);
-    // const artists = await spotifyRef.current.fetchArtists(artistList, accessToken!);
+    const artists = await spotifyRef.current.fetchArtists(artistList, accessRef.current!);
     console.log(accessRef.current);
-    // console.log(artists)
+    console.log(artists)
 
   }
 

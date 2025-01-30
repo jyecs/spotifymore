@@ -1,16 +1,7 @@
-import { Track,FetchedSongs, SavedTrackObject} from "./vite-env";
+import { Track,FetchedSongs, SavedTrackObject, FetchedArtists, ArtistObject} from "./vite-env";
 function spotify() {
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT;
-let loadedToken = "";
-
-/*if (!code) {
-    redirectToAuthCodeFlow(clientId);
-} else {
-    const accessToken = await getAccessToken(clientId, code);
-    const profile = await fetchProfile(accessToken);
-    const savedSongs = await fetchSavedTracks(accessToken);
-    console.log(savedSongs);
-} */
+let savedArtists = new Array<ArtistObject>();
 
 async function redirectToAuthCodeFlow(clientId: string) {
     const verifier = generateCodeVerifier(128);
@@ -65,7 +56,6 @@ async function getAccessToken(code: string): Promise<string> {
     });
 
     const { access_token } = await result.json();
-    loadedToken = access_token;
     return access_token;
 }
 
@@ -135,7 +125,6 @@ function getAllTracklistArtists(tracks: Track[]): Map<string,string> {
             artists.set(artist.name, artist.id);
         })
     })
-    console.log(artists);
     return artists;
 }
 
@@ -155,19 +144,27 @@ function convertArtistsToCallableArray(artistIDs: IterableIterator<string>) {
     return concatedArtists;
 }
 
-async function fetchArtists(concatedAritsts: string[], token: string) {
-    const artists = [];
+async function fetchArtists(concatedAritsts: string[], token: string): Promise<ArtistObject[]> {
+    const artists = Array<ArtistObject>();
     for (let i = 0; i < concatedAritsts.length; i++) {
-        let result = await fetch(`https://api.spotify.com/v1/artists?id=${concatedAritsts[0]}`, {
-            method: "GET",
-            headers: { authorization: `Bearer ${token}` }
-        });
-        result = await result.json();
-        artists.push(result);
+        const URL = `https://api.spotify.com/v1/artists?ids=${concatedAritsts[0]}`;
+        let result = await fetchArtistsData(URL, token);
+        result.artists.forEach((artistObj: ArtistObject) => {
+            artists.push(artistObj);
+        })
     }
-
+    savedArtists = artists;
     return artists;
 
+}
+
+async function fetchArtistsData(URL: string, token: string): Promise<FetchedArtists> {
+    let result = await fetch(URL, {
+        method: "GET",
+        headers: { authorization: `Bearer ${token}` }
+    });
+
+    return await result.json();
 }
 
 async function getAuthorization() {

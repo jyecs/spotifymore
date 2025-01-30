@@ -47,3 +47,20 @@ interface SimplifiedArtistObject {
     type: string;
     uri: string;
 }
+
+interface ArtistObject {
+    external_urls: object;
+    followers: object;
+    genres: string[];
+    href: string;
+    id: string;
+    images: object[];
+    name: string;
+    popularity: number;
+    type: string;
+    uri: string;
+}
+
+interface FetchedArtists {
+    artists: ArtistObject[];
+}

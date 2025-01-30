@@ -1,8 +1,7 @@
 import { Track,FetchedSongs, SavedTrackObject} from "./vite-env";
 function spotify() {
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT;
-const params = new URLSearchParams(window.location.search);
-const code = params.get("code");
+let loadedToken = "";
 
 /*if (!code) {
     redirectToAuthCodeFlow(clientId);
@@ -49,7 +48,7 @@ async function generateCodeChallenge(codeVerifier: string) {
         .replace(/=+$/, '');
 }
 
-async function getAccessToken(clientId: string, code: string): Promise<string> {
+async function getAccessToken(code: string): Promise<string> {
     const verifier = localStorage.getItem("verifier");
 
     const params = new URLSearchParams();
@@ -66,7 +65,7 @@ async function getAccessToken(clientId: string, code: string): Promise<string> {
     });
 
     const { access_token } = await result.json();
-    console.log(access_token);
+    loadedToken = access_token;
     return access_token;
 }
 
@@ -109,8 +108,7 @@ async function fetchTracks(token: string, URL: string): Promise<FetchedSongs> {
     return await result.json();
 }
 
-async function getSongs(code: string): Promise<Track[]> {
-    const accessToken = await getAccessToken(clientId, code);
+async function getSongs(accessToken: string): Promise<Track[]> {
     const tracks = await fetchSavedTracks(accessToken);
     const listOfAllTracks = processTracks(tracks);
     return listOfAllTracks;
@@ -137,13 +135,14 @@ function getAllTracklistArtists(tracks: Track[]): Map<string,string> {
             artists.set(artist.name, artist.id);
         })
     })
+    console.log(artists);
     return artists;
 }
 
 function convertArtistsToCallableArray(artistIDs: IterableIterator<string>) {
     let arrayOfArtists = new Array<string>();
     let concatedArtists = new Array<string>();
-    for (const id in artistIDs) {
+    for (const id of artistIDs) {
         if (arrayOfArtists.length === 50) { 
             concatedArtists.push(arrayOfArtists.toString());
             arrayOfArtists = [];
@@ -153,9 +152,22 @@ function convertArtistsToCallableArray(artistIDs: IterableIterator<string>) {
     if (arrayOfArtists.length > 0) {
         concatedArtists.push(arrayOfArtists.toString());
     }
-
-    console.log(concatedArtists);
     return concatedArtists;
+}
+
+async function fetchArtists(concatedAritsts: string[], token: string) {
+    const artists = [];
+    for (let i = 0; i < concatedAritsts.length; i++) {
+        let result = await fetch(`https://api.spotify.com/v1/artists?id=${concatedAritsts[0]}`, {
+            method: "GET",
+            headers: { authorization: `Bearer ${token}` }
+        });
+        result = await result.json();
+        artists.push(result);
+    }
+
+    return artists;
+
 }
 
 async function getAuthorization() {
@@ -163,6 +175,6 @@ async function getAuthorization() {
 }
 
 
-return {getSongs, getAuthorization, getAllTracklistArtists, convertArtistsToCallableArray}
+return {getSongs, getAuthorization, getAllTracklistArtists, convertArtistsToCallableArray, fetchArtists, getAccessToken}
 }
 export default spotify

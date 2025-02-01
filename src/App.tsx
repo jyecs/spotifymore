@@ -10,12 +10,10 @@ function App() {
   const buttonRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
-    console.log("Called");
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
     if (code) {
       async function getAccess() {
-        console.log("Get Access Called")
         const token = await spotifyRef.current.getAccessToken(code!)
         if (token) {
           accessRef.current = token;
@@ -49,20 +47,13 @@ function App() {
     const artistIterator = spotifyRef.current.getAllTracklistArtists(trackList!).values();
     const artistList = spotifyRef.current.convertArtistsToCallableArray(artistIterator);
     const artists = await spotifyRef.current.fetchArtists(artistList, accessRef.current!);
-    console.log(accessRef.current);
-    console.log(artists)
 
-  }
-
-  function handleTest() {
-    console.log(accessRef.current);
   }
 
   return (
     <>
       <button onClick={spotifyRef.current.getAuthorization}>Test</button>
       <button ref={buttonRef}>Test 2</button>
-      <button onClick={handleTest}>Test 3</button>
     </>
   )
 }

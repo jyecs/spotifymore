@@ -1,7 +1,6 @@
 import { Track,FetchedSongs, SavedTrackObject, FetchedArtists, ArtistObject} from "./vite-env";
 function spotify() {
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT;
-let savedArtists = new Array<ArtistObject>();
 
 async function redirectToAuthCodeFlow(clientId: string) {
     const verifier = generateCodeVerifier(128);
@@ -146,16 +145,15 @@ function convertArtistsToCallableArray(artistIDs: IterableIterator<string>) {
     return concatedArtists;
 }
 
-async function fetchArtists(concatedAritsts: string[], token: string): Promise<ArtistObject[]> {
-    const artists = Array<ArtistObject>();
+async function fetchArtists(concatedAritsts: string[], token: string): Promise<Set<ArtistObject>> {
+    const artists = new Set<ArtistObject>();
     for (let i = 0; i < concatedAritsts.length; i++) {
         const URL = `https://api.spotify.com/v1/artists?ids=${concatedAritsts[i]}`;
         let result = await fetchArtistsData(URL, token);
         result.artists.forEach((artistObj: ArtistObject) => {
-            artists.push(artistObj);
+            artists.add(artistObj);
         })
     }
-    savedArtists = artists;
     return artists;
 
 }

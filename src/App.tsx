@@ -7,8 +7,9 @@ function App() {
   const [trackList, setTrackList] = useState<Array<Track> | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const accessRef = useRef<string | null>(null);
-  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const buttonRef = useRef<HTMLButtonElement | null>(null); // Remove later
 
+  // On first load get access token if there is a code
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
@@ -24,6 +25,8 @@ function App() {
     }
   }, [])
 
+  // Instead of doing this make it so that when the access token is granted it lets everyone else know to do their thing using
+  // the ref instead of the state one.
   useEffect(() => {
     if (accessToken) {
       async function getSongsFromSpotify(token: string) {
@@ -34,6 +37,7 @@ function App() {
     }
   }, [accessToken])
 
+  // Change to a regular button afterwards.
   useEffect(() => {
     if (trackList) {
       console.log(trackList);

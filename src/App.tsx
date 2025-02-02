@@ -47,6 +47,7 @@ function App() {
     const artistIterator = spotifyRef.current.getAllTracklistArtists(trackList!).values();
     const artistList = spotifyRef.current.convertArtistsToCallableArray(artistIterator);
     const artists = await spotifyRef.current.fetchArtists(artistList, accessRef.current!);
+    console.log(artists);
 
   }
 

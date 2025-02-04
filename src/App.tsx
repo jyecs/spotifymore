@@ -63,11 +63,24 @@ function App() {
         <p className='justify-self-center col-start-9 row-start-1'>FAQ</p>
         <p className='justify-self-start col-start-10 row-start-1'>GitHub</p>
       </header>
-      <hr className='p-[1px 0px 0px 10px] w-full bg-gray-700 h-[2px]'></hr>
-      <div className='flex flex-col bg-black text-white h-screen gap-2 items-center content-center'>
+      <hr className='p-[1px 0px 0px 10px] w-full bg-gray-700 h-[2px] mb-30'></hr>
+      <div className='flex flex-col text-white h-screen gap-2 items-center content-center'>
         <h1 className='font-bold text-[60px]'>Load. Tailor. Listen.</h1>
         <p className='text-4x1'>Quickly create playlists from your favorite songs on Spotify.</p>
         <button className='bg-green-600 h-12 w-30 rounded-3xl hover:bg-green-700'>Get Started</button>
+      </div>
+      <div className='pl-60 pr-60 bg-gray-900'>
+        <div className='flex flex-col text-white h-screen gap-4 items-center content-center bg-gray-900 pr-60 pl-60 pt-45'>
+          <h1 className='font-bold text-[60px]'>FAQ</h1>
+          <h2 className='text-2xl'>How does Listify work?</h2>
+          <p className='text-center text-gray-400'>Listify retrieves your Spotify saved songs through Spotify's API and categorizes them by genre.</p>
+          <h2 className='text-2xl'>How come some songs don't show up in any playlist?</h2>
+          <p className='text-center text-gray-400'>We categorize songs through genre by proxy of their artist's genre. However some artists don't have genres associated with them, even some well known artists such as Imagine Dragons do not have a genre associated with them.</p>
+          <h2 className='text-2xl'>How come it says that I can't use Listify?</h2>
+          <p className='text-center text-gray-400'>Until this app gets an extended quota status from Spotify, you must be whitelisted in order to use.</p>
+          <h2 className='text-2xl'>Is this app associated with Spotify?</h2>
+          <p className='text-center text-gray-400'>While we use their API, Listify is not associated in anyway with Spotify</p>
+        </div>
       </div>
     </div>
   )

@@ -56,12 +56,21 @@ function App() {
   }
 
   return (
-    <>
-      <button onClick={spotifyRef.current.getAuthorization}>Test</button>
-      <button ref={buttonRef}>Test 2</button>
-    </>
+    <div className=''>
+      <header className='grid grid-cols-10 grid-rows-none bg-black text-white gap-2 text-xl m-5 pr-40 pl-40'>
+        <p className='justify-self-center'>Listify</p>
+        <p className='justify-self-end col-start-8 row-start-1'>About</p>
+        <p className='justify-self-center col-start-9 row-start-1'>FAQ</p>
+        <p className='justify-self-start col-start-10 row-start-1'>GitHub</p>
+      </header>
+      <hr className='p-[1px 0px 0px 10px] w-full bg-gray-700 h-[2px]'></hr>
+      <div className='flex flex-col bg-black text-white h-screen gap-2 items-center content-center'>
+        <h1 className='font-bold text-[60px]'>Load. Tailor. Listen.</h1>
+        <p className='text-4x1'>Quickly create playlists from your favorite songs on Spotify.</p>
+        <button className='bg-green-600 h-12 w-30 rounded-3xl hover:bg-green-700'>Get Started</button>
+      </div>
+    </div>
   )
 }
 
-export default App
-  ;
+export default App;

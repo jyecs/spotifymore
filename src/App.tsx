@@ -24,6 +24,7 @@ function App() {
           setAccessToken(token);
         }
       }
+      setChanged(true);
       getAccess();
     }
   }, [])
@@ -61,7 +62,6 @@ function App() {
   },[artistList])
 
   function callbackTest() {
-    setChanged(true);
     spotifyRef.current.getAuthorization();
   }
 

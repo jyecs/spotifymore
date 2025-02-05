@@ -132,14 +132,12 @@ function convertArtistsToCallableArray(artistIDs: IterableIterator<string>) {
     let concatedArtists = new Array<string>();
     for (const id of artistIDs) {
         if (arrayOfArtists.length === 50) { 
-            console.log(arrayOfArtists);
             concatedArtists.push(arrayOfArtists.toString());
             arrayOfArtists = [];
         }
         arrayOfArtists.push(id);
     }
     if (arrayOfArtists.length > 0) {
-        console.log(arrayOfArtists);
         concatedArtists.push(arrayOfArtists.toString());
     }
     return concatedArtists;

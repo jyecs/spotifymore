@@ -1,13 +1,16 @@
 import { useRef, useState, useEffect } from 'react'
 import './App.css'
 import spotify from './spotify'
+import Landing from './landing'
+import { ArtistObject } from './vite-env'
 
 function App() {
   const spotifyRef = useRef(spotify())
   const [trackList, setTrackList] = useState<Array<Track> | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const accessRef = useRef<string | null>(null);
-  const buttonRef = useRef<HTMLButtonElement | null>(null); // Remove later
+  const [changed, setChanged]= useState(false);
+  const [artistList, setArtistList] = useState<Set<ArtistObject> | null>(null);
 
   // On first load get access token if there is a code
   useEffect(() => {
@@ -29,11 +32,11 @@ function App() {
   // the ref instead of the state one.
   useEffect(() => {
     if (accessToken) {
-      async function getSongsFromSpotify(token: string) {
-        const songs = await spotifyRef.current.getSongs(token);
+      async function getSongsFromSpotify() {
+        const songs = await spotifyRef.current.getSongs(accessRef.current!);
         setTrackList(songs);
       }
-      getSongsFromSpotify(accessToken);
+      getSongsFromSpotify();
     }
   }, [accessToken])
 
@@ -41,48 +44,29 @@ function App() {
   useEffect(() => {
     if (trackList) {
       console.log(trackList);
-      buttonRef.current?.addEventListener("click", (e) => {
-        handleClickTest(e);
-      })
+      async function getArtistsFromSpotify() {
+        const artistIterator = spotifyRef.current.getAllTracklistArtists(trackList!).values();
+        const artistList = spotifyRef.current.convertArtistsToCallableArray(artistIterator);
+        const artists = await spotifyRef.current.fetchArtists(artistList, accessRef.current!);
+        setArtistList(artists);
+      }
+      getArtistsFromSpotify();
     }
   }, [trackList])
 
-  async function handleClickTest(e: MouseEvent) {
-    const artistIterator = spotifyRef.current.getAllTracklistArtists(trackList!).values();
-    const artistList = spotifyRef.current.convertArtistsToCallableArray(artistIterator);
-    const artists = await spotifyRef.current.fetchArtists(artistList, accessRef.current!);
-    console.log(artists);
+  useEffect(() => {
+    if (artistList) {
+      console.log(artistList);
+    }
+  },[artistList])
 
+  function callbackTest() {
+    setChanged(true);
+    spotifyRef.current.getAuthorization();
   }
 
   return (
-    <div className=''>
-      <header className='grid grid-cols-10 grid-rows-none bg-black text-white gap-2 text-xl m-5 pr-40 pl-40'>
-        <p className='justify-self-center'>Listify</p>
-        <p className='justify-self-end col-start-8 row-start-1'>About</p>
-        <p className='justify-self-center col-start-9 row-start-1'>FAQ</p>
-        <p className='justify-self-start col-start-10 row-start-1'>GitHub</p>
-      </header>
-      <hr className='p-[1px 0px 0px 10px] w-full bg-gray-700 h-[2px] mb-30'></hr>
-      <div className='flex flex-col text-white h-screen gap-2 items-center content-center'>
-        <h1 className='font-bold text-[60px]'>Load. Tailor. Listen.</h1>
-        <p className='text-4x1'>Quickly create playlists from your favorite songs on Spotify.</p>
-        <button className='bg-green-600 h-12 w-30 rounded-3xl hover:bg-green-700'>Get Started</button>
-      </div>
-      <div className='pl-60 pr-60 bg-gray-900'>
-        <div className='flex flex-col text-white h-screen gap-4 items-center content-center bg-gray-900 pr-60 pl-60 pt-45'>
-          <h1 className='font-bold text-[60px]'>FAQ</h1>
-          <h2 className='text-2xl'>How does Listify work?</h2>
-          <p className='text-center text-gray-400'>Listify retrieves your Spotify saved songs through Spotify's API and categorizes them by genre.</p>
-          <h2 className='text-2xl'>How come some songs don't show up in any playlist?</h2>
-          <p className='text-center text-gray-400'>We categorize songs through genre by proxy of their artist's genre. However some artists don't have genres associated with them, even some well known artists such as Imagine Dragons do not have a genre associated with them.</p>
-          <h2 className='text-2xl'>How come it says that I can't use Listify?</h2>
-          <p className='text-center text-gray-400'>Until this app gets an extended quota status from Spotify, you must be whitelisted in order to use.</p>
-          <h2 className='text-2xl'>Is this app associated with Spotify?</h2>
-          <p className='text-center text-gray-400'>While we use their API, Listify is not associated in anyway with Spotify</p>
-        </div>
-      </div>
-    </div>
+    <Landing isChanged={changed} callback={callbackTest} ></Landing>
   )
 }
 

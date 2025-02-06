@@ -1,6 +1,8 @@
 import { ArtistObject, FetchedArtists } from "./vite-env"
 
 function PlaylistCreator() {
+
+    // TO FIX: Some songs has multiple artists, the artists then may share the same genre creating double dips
     function createPlaylists(tracks: Track[], artists: Map<string, ArtistObject>) {
         const playlists = new Map<string, Track[]>();
         tracks.forEach((track) => {

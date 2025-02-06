@@ -7,7 +7,7 @@ interface Props {
 const Playlister: React.FC<Props> = ( {playlists, isChanged} ) => {
     if(!isChanged) { return null; }
     console.log(playlists);
-    const listItems = playlists ? playlists![0][1].map((track, index) => {
+    const listItems = playlists ? playlists![2][1].map((track, index) => {
         return <li key={index} >{track.name}</li>
     }) : null
 

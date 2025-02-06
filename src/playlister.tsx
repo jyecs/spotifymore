@@ -1,13 +1,22 @@
+import { list } from "postcss";
 import React, { useEffect } from "react";
 interface Props {
     playlists: [string,Track[]][] | null,
     isChanged: boolean
 }
 const Playlister: React.FC<Props> = ( {playlists, isChanged} ) => {
-    if(!isChanged) { return null }
+    if(!isChanged) { return null; }
+    console.log(playlists);
+    const listItems = playlists ? playlists![0][1].map((track, index) => {
+        return <li key={index} >{track.name}</li>
+    }) : null
 
-    return(
+
+    return (
+        <>
         <div className="text-white">Loaded In</div>
+        <ul className="text-white">{listItems}</ul>
+        </>
     )
 }
 

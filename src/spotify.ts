@@ -143,13 +143,13 @@ function convertArtistsToCallableArray(artistIDs: IterableIterator<string>) {
     return concatedArtists;
 }
 
-async function fetchArtists(concatedAritsts: string[], token: string): Promise<Set<ArtistObject>> {
-    const artists = new Set<ArtistObject>();
+async function fetchArtists(concatedAritsts: string[], token: string): Promise<Map<string, ArtistObject>> {
+    const artists = new Map<string, ArtistObject>();
     for (let i = 0; i < concatedAritsts.length; i++) {
         const URL = `https://api.spotify.com/v1/artists?ids=${concatedAritsts[i]}`;
         let result = await fetchArtistsData(URL, token);
         result.artists.forEach((artistObj: ArtistObject) => {
-            artists.add(artistObj);
+            artists.set(artistObj.id, artistObj);
         })
     }
     return artists;

@@ -3,6 +3,8 @@ import './App.css'
 import spotify from './spotify'
 import Landing from './landing'
 import { ArtistObject } from './vite-env'
+import PlaylistCreator from './playlistCreator'
+import Playlister from './playlister'
 
 function App() {
   const spotifyRef = useRef(spotify())
@@ -10,7 +12,9 @@ function App() {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const accessRef = useRef<string | null>(null);
   const [changed, setChanged]= useState(false);
-  const [artistList, setArtistList] = useState<Set<ArtistObject> | null>(null);
+  const [artistList, setArtistList] = useState<Map<string, ArtistObject> | null>(null);
+  const playlistRef = useRef(PlaylistCreator());
+  const [playlists, setPlaylists] = useState<[string,Track[]][] | null>(null);
 
   // On first load get access token if there is a code
   useEffect(() => {
@@ -29,8 +33,6 @@ function App() {
     }
   }, [])
 
-  // Instead of doing this make it so that when the access token is granted it lets everyone else know to do their thing using
-  // the ref instead of the state one.
   useEffect(() => {
     if (accessToken) {
       async function getSongsFromSpotify() {
@@ -41,14 +43,14 @@ function App() {
     }
   }, [accessToken])
 
-  // Change to a regular button afterwards.
   useEffect(() => {
     if (trackList) {
       console.log(trackList);
       async function getArtistsFromSpotify() {
+        if (artistList) { return } // don't want to call the API more times than needed
         const artistIterator = spotifyRef.current.getAllTracklistArtists(trackList!).values();
-        const artistList = spotifyRef.current.convertArtistsToCallableArray(artistIterator);
-        const artists = await spotifyRef.current.fetchArtists(artistList, accessRef.current!);
+        const artistLists = spotifyRef.current.convertArtistsToCallableArray(artistIterator);
+        const artists = await spotifyRef.current.fetchArtists(artistLists, accessRef.current!);
         setArtistList(artists);
       }
       getArtistsFromSpotify();
@@ -58,6 +60,10 @@ function App() {
   useEffect(() => {
     if (artistList) {
       console.log(artistList);
+      const playlists = playlistRef.current.createPlaylists(trackList! ,artistList);
+      const playlistEntries = Array.from(playlists.entries());
+      playlistEntries.sort((a,b) => b[1].length - a[1].length);
+      setPlaylists(playlistEntries);
     }
   },[artistList])
 
@@ -66,7 +72,10 @@ function App() {
   }
 
   return (
-    <Landing isChanged={changed} callback={callbackTest} ></Landing>
+    <>
+      <Landing isChanged={changed} callback={callbackTest} ></Landing>
+      <Playlister isChanged={changed} playlists={playlists}></Playlister>
+    </>
   )
 }
 

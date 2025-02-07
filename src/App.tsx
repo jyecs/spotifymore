@@ -14,7 +14,7 @@ function App() {
   const [changed, setChanged]= useState(false);
   const [artistList, setArtistList] = useState<Map<string, ArtistObject> | null>(null);
   const playlistRef = useRef(PlaylistCreator());
-  const [playlists, setPlaylists] = useState<[string,Track[]][] | null>(null);
+  const [playlists, setPlaylists] = useState<[string,Set<Track>][] | null>(null);
 
   // On first load get access token if there is a code
   useEffect(() => {
@@ -62,7 +62,7 @@ function App() {
       console.log(artistList);
       const playlists = playlistRef.current.createPlaylists(trackList! ,artistList);
       const playlistEntries = Array.from(playlists.entries());
-      playlistEntries.sort((a,b) => b[1].length - a[1].length);
+      playlistEntries.sort((a,b) => b[1].size - a[1].size);
       setPlaylists(playlistEntries);
     }
   },[artistList])

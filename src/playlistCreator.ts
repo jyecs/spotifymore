@@ -4,7 +4,7 @@ function PlaylistCreator() {
 
     // TO FIX: Some songs has multiple artists, the artists then may share the same genre creating double dips
     function createPlaylists(tracks: Track[], artists: Map<string, ArtistObject>) {
-        const playlists = new Map<string, Track[]>();
+        const playlists = new Map<string, Set<Track>>;
         tracks.forEach((track) => {
             const genres = getGenres(track, artists);
             processGenreToTrack(track, genres, playlists);
@@ -27,15 +27,15 @@ function PlaylistCreator() {
         return genres;
     }
 
-    function processGenreToTrack(track: Track, genres: string[], playlists: Map<string, Track[]>) {
+    function processGenreToTrack(track: Track, genres: string[], playlists: Map<string, Set<Track>>) {
         genres.forEach((genre) => {
             if (!playlists.has(genre)) {
-                const playlist = new Array<Track>();
-                playlist.push(track);
+                const playlist = new Set<Track>();
+                playlist.add(track);
                 playlists.set(genre, playlist);
             } else {
                 const playlist = playlists.get(genre);
-                playlist!.push(track);
+                playlist!.add(track);
             }
         })
     }

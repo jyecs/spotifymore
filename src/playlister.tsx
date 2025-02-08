@@ -1,23 +1,25 @@
 import { list } from "postcss";
 import React, { useEffect, useState } from "react";
+import TrackItem from "./trackItem";
 interface Props {
     playlists: [string,Set<Track>][] | null,
-    isChanged: boolean
+    isChanged: boolean,
+    tracks: Array<Track> | null
 }
-const Playlister: React.FC<Props> = ( {playlists, isChanged} ) => {
+const Playlister: React.FC<Props> = ( {playlists, isChanged, tracks} ) => {
     const [playlistNum, setPlaylistNum] = useState(0);
     const [listItems, setListItems] = useState<any>(null);
 
     useEffect(()=> {
         setListItems(playlists ? Array.from(playlists![0][1]).map((track, index) => {
-            return <li className="text-center flex flex-row items-center justify-between mb-3 ml-5 mr-5 border border-solid border-white p-3" key={index} ><span>{track.name}</span> <span>{track.artists[0].name}</span></li>
+            return <TrackItem key={index} track={track}></TrackItem>
         }) : null)
         console.log("First Effect Called")
     },[playlists])
 
     useEffect(()=> {
         setListItems(playlists? Array.from(playlists![playlistNum][1]).map((track, index) => {
-            return <li className="text-center flex flex-row items-center justify-between mb-3 ml-5 mr-5 border border-solid border-white p-3" key={index} ><span>{track.name}</span> <span>{track.artists[0].name}</span></li>
+            return <TrackItem key={index} track={track}></TrackItem>
         }) : null)
     },[playlistNum])
 

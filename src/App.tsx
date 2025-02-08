@@ -22,6 +22,7 @@ function App() {
     const code = params.get("code");
     if (code) {
       async function getAccess() {
+        if (accessRef.current) { return }
         const token = await spotifyRef.current.getAccessToken(code!)
         if (token) {
           accessRef.current = token;
@@ -74,7 +75,7 @@ function App() {
   return (
     <>
       <Landing isChanged={changed} callback={callbackTest} ></Landing>
-      <Playlister isChanged={changed} playlists={playlists}></Playlister>
+      <Playlister isChanged={changed} playlists={playlists} tracks={trackList}></Playlister>
     </>
   )
 }

@@ -64,3 +64,20 @@ interface ArtistObject {
 interface FetchedArtists {
     artists: ArtistObject[];
 }
+
+interface SpotifyPlaylist {
+    collaborative: boolean;
+    description: string | null;
+    external_urls: object;
+    followers: object;
+    href: string;
+    id: string;
+    images: object; // change this
+    name: string;
+    owner: object; // change this
+    public: boolean;
+    snapshot_id: string;
+    tracks: object; // hopefully don't need to change this
+    type: string;
+    uri: string
+}

@@ -39,6 +39,29 @@ interface Track {
     is_local: boolean;
 }
 
+interface Album {
+    album_type: string;
+    total_tracks: number;
+    available_markets: Array<string>;
+    external_urls: object;
+    href: string;
+    id: string;
+    images: Array<ImageObject>;
+    name: string;
+    release_date: string;
+    release_date_precision: string;
+    restrictions: object;
+    type: string;
+    uri: string;
+    artists: Array<SimplifiedArtistObject>
+}
+
+interface ImageObject {
+    url: string;
+    height: number;
+    width: number;
+}
+
 interface SimplifiedArtistObject {
     external_urls: object;
     href: string;

@@ -1,4 +1,3 @@
-import { list } from "postcss";
 import React, { useEffect, useState } from "react";
 import TrackItem from "./trackItem";
 interface Props {
@@ -32,7 +31,7 @@ const Playlister: React.FC<Props> = ( {playlists, isChanged, tracks, callback} )
         if (button.innerHTML === "Next" && playlistNum < playlists!.length) { setPlaylistNum((prev) => prev + 1); }
     }
 
-    function handleCallback(e: React.MouseEvent<HTMLButtonElement>) {
+    function handleCallback() {
         const tracks = playlists![playlistNum][1];
         const genre = playlists![playlistNum][0];
 

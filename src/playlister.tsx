@@ -4,9 +4,10 @@ import TrackItem from "./trackItem";
 interface Props {
     playlists: [string,Set<Track>][] | null,
     isChanged: boolean,
-    tracks: Array<Track> | null
+    tracks: Array<Track> | null,
+    callback: (genre: string, tracks: Set<Track>) => void
 }
-const Playlister: React.FC<Props> = ( {playlists, isChanged, tracks} ) => {
+const Playlister: React.FC<Props> = ( {playlists, isChanged, tracks, callback} ) => {
     const [playlistNum, setPlaylistNum] = useState(0);
     const [listItems, setListItems] = useState<any>(null);
 
@@ -31,8 +32,16 @@ const Playlister: React.FC<Props> = ( {playlists, isChanged, tracks} ) => {
         if (button.innerHTML === "Next" && playlistNum < playlists!.length) { setPlaylistNum((prev) => prev + 1); }
     }
 
+    function handleCallback(e: React.MouseEvent<HTMLButtonElement>) {
+        const tracks = playlists![playlistNum][1];
+        const genre = playlists![playlistNum][0];
+
+        callback(genre, tracks);
+    }
+
     return (
         <>
+        <button className="border border-solid bg-gray-700 hover:bg-gray-600" onClick={handleCallback}>Test Callback!</button>
         <ul className="text-white bg-gray-700 ml-80 mr-80 pt-5 pb-5 mt-10 mb-10">
             <div className="flex flex-row space-evenly items-center justify-center gap-10">
                 <button className = "border border-solid border-white hover:bg-gray-600 mb-3 pl-3 pr-3" onClick={handleClick}>Prev</button>

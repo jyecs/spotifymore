@@ -1,4 +1,4 @@
-import { Track,FetchedSongs, SavedTrackObject, FetchedArtists, ArtistObject} from "./vite-env";
+import { Track,FetchedSongs, SavedTrackObject, FetchedArtists, ArtistObject, UserProfile, SpotifyPlaylist} from "./vite-env";
 function spotify() {
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT;
 
@@ -58,9 +58,32 @@ async function getAccessToken(code: string): Promise<string> {
     return access_token;
 }
 
-async function fetchProfile(token: string): Promise<any> {
+async function fetchProfile(token: string): Promise<UserProfile> {
     const result = await fetch("https://api.spotify.com/v1/me", {
         method: "GET", headers: { Authorization: `Bearer ${token}` }
+    });
+
+    return await result.json();
+}
+
+async function putPlaylistToSpotify(token: string, playlistName: string, tracks: Set<Track>) {
+    const profile = await fetchProfile(token);
+    const id = profile.id;
+    console.log(playlistName);
+    const playlist = await createPlaylist(token, id, playlistName);
+    console.log(playlist);
+
+}
+
+async function createPlaylist(token: string, id: string, playlistName: string): Promise<SpotifyPlaylist> {
+    const params =  {
+        "name": playlistName
+    }
+
+    const result = await fetch(`https://api.spotify.com/v1/users/${id}/playlists`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`} ,
+        body: JSON.stringify(params)
     });
 
     return await result.json();
@@ -170,6 +193,6 @@ async function getAuthorization() {
 }
 
 
-return {getSongs, getAuthorization, getAllTracklistArtists, convertArtistsToCallableArray, fetchArtists, getAccessToken}
+return {getSongs, getAuthorization, getAllTracklistArtists, convertArtistsToCallableArray, fetchArtists, getAccessToken, putPlaylistToSpotify}
 }
 export default spotify

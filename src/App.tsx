@@ -72,10 +72,17 @@ function App() {
     spotifyRef.current.getAuthorization();
   }
 
+  async function handlePlaylistAdd(genre: string, tracks: Set<Track>) {
+    console.log("This was called from playlister");
+    console.log(genre);
+    console.log(tracks);
+    console.log( await spotifyRef.current.putPlaylistToSpotify(accessRef.current!, genre, tracks));
+  }
+
   return (
     <>
       <Landing isChanged={changed} callback={callbackTest} ></Landing>
-      <Playlister isChanged={changed} playlists={playlists} tracks={trackList}></Playlister>
+      <Playlister isChanged={changed} playlists={playlists} tracks={trackList} callback={handlePlaylistAdd}></Playlister>
     </>
   )
 }

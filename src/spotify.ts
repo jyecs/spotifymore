@@ -71,7 +71,8 @@ async function putPlaylistToSpotify(token: string, playlistName: string, tracks:
     const id = profile.id;
     console.log(playlistName);
     const playlist = await createPlaylist(token, id, playlistName);
-    console.log(playlist);
+    const playlistID = playlist.id;
+    await putTracksToPlaylist(token, playlistID, tracks);
 
 }
 
@@ -87,6 +88,40 @@ async function createPlaylist(token: string, id: string, playlistName: string): 
     });
 
     return await result.json();
+}
+
+async function putTracksToPlaylist(token: string, playlistID: string, tracks: Set<Track>) {
+    const trackStrings = new Array<Array<String>>();
+    const tracksIterable = tracks.keys()
+    let uris = new Array<string>;
+
+    for (const track of tracksIterable) {
+        if (uris.length === 100) {
+            trackStrings.push(uris);
+            uris = [];
+        }
+        uris.push(track.uri);
+    }
+    if (uris.length > 0) {
+        trackStrings.push(uris);
+    }
+
+    trackStrings.forEach(async (uri) => {
+        await putTracks(token, playlistID, uri);
+    })
+}
+
+async function putTracks(token: string, playlistID: string, uris: Array<String>) {
+    const params = {
+        "uris":  uris
+    }
+    const result = await fetch(`https://api.spotify.com/v1/playlists/${playlistID}/tracks`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`} ,
+        body: JSON.stringify(params)
+    });
+
+    return await result.json(); // Don't need this could treat as a void function
 }
 
 async function fetchSavedTracks(token: string) {

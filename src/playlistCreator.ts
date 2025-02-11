@@ -1,4 +1,4 @@
-import { ArtistObject, FetchedArtists } from "./vite-env"
+import { ArtistObject} from "./vite-env"
 
 function PlaylistCreator() {
 

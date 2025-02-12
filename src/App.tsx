@@ -5,6 +5,7 @@ import Landing from './landing'
 import { ArtistObject } from './vite-env'
 import PlaylistCreator from './playlistCreator'
 import Playlister from './playlister'
+import LoadingPage from './loadingPage'
 
 function App() {
   const spotifyRef = useRef(spotify())
@@ -15,6 +16,8 @@ function App() {
   const [artistList, setArtistList] = useState<Map<string, ArtistObject> | null>(null);
   const playlistRef = useRef(PlaylistCreator());
   const [playlists, setPlaylists] = useState<[string,Set<Track>][] | null>(null);
+  const [isloading, setIsLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("");
 
   // On first load get access token if there is a code
   useEffect(() => {
@@ -29,7 +32,7 @@ function App() {
           setAccessToken(token);
         }
       }
-      setChanged(true);
+      setIsLoading(true);
       getAccess();
     }
   }, [])
@@ -37,6 +40,7 @@ function App() {
   useEffect(() => {
     if (accessToken) {
       async function getSongsFromSpotify() {
+        setLoadingMessage("Getting Songs from Your Profile...");
         const songs = await spotifyRef.current.getSongs(accessRef.current!);
         setTrackList(songs);
       }
@@ -49,6 +53,7 @@ function App() {
       console.log(trackList);
       async function getArtistsFromSpotify() {
         if (artistList) { return } // don't want to call the API more times than needed
+        setLoadingMessage("Creating playlists...")
         const artistIterator = spotifyRef.current.getAllTracklistArtists(trackList!).values();
         const artistLists = spotifyRef.current.convertArtistsToCallableArray(artistIterator);
         const artists = await spotifyRef.current.fetchArtists(artistLists, accessRef.current!);
@@ -65,6 +70,8 @@ function App() {
       const playlistEntries = Array.from(playlists.entries());
       playlistEntries.sort((a,b) => b[1].size - a[1].size);
       setPlaylists(playlistEntries);
+      setIsLoading(false);
+      setChanged(true);
     }
   },[artistList])
 
@@ -73,7 +80,6 @@ function App() {
   }
 
   async function handlePlaylistAdd(genre: string, tracks: Set<Track>) {
-    console.log("This was called from playlister");
     console.log(genre);
     console.log(tracks);
     console.log( await spotifyRef.current.putPlaylistToSpotify(accessRef.current!, genre, tracks));
@@ -81,7 +87,8 @@ function App() {
 
   return (
     <>
-      <Landing isChanged={changed} callback={callbackTest} ></Landing>
+      <Landing isChanged={changed} isLoading= {isloading} callback={callbackTest} ></Landing>
+      <LoadingPage isLoading={isloading} msg={loadingMessage}></LoadingPage>
       <Playlister isChanged={changed} playlists={playlists} tracks={trackList} callback={handlePlaylistAdd}></Playlister>
     </>
   )

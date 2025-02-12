@@ -1,11 +1,12 @@
 import React from "react"
 interface Props {
   isChanged: boolean;
+  isLoading: boolean
   callback: () => void;
 }
 
-const Landing: React.FC<Props> = ({isChanged, callback}) => {
-  if(isChanged) {
+const Landing: React.FC<Props> = ({isChanged, isLoading, callback}) => {
+  if(isLoading || isChanged) {
     return null;
   }
 

@@ -15,8 +15,20 @@ const Playlister: React.FC<Props> = ( {playlists, isChanged, tracks, callback} )
     function callbackTrack(track: Track, type: string) {
         console.log(track);
         console.log(type);
+        if (type === "Delete") {
+            playlists![playlistNum][1].delete(track);
+            setListItems(playlists ? Array.from(playlists![0][1]).map((track, index) => {
+                return <TrackItem key={index} track={track} callbackTrack={callbackTrack} type="Delete"></TrackItem>
+            }) : null);
+        }
+        if (type === "Add") {
+            playlists![playlistNum][1].add(track);
+            setListItems(playlists ? Array.from(playlists![0][1]).map((track, index) => {
+                return <TrackItem key={index} track={track} callbackTrack={callbackTrack} type="Delete"></TrackItem>
+            }) : null);
+        }
     }
-
+    
     useEffect(()=> {
         setListItems(playlists ? Array.from(playlists![0][1]).map((track, index) => {
             return <TrackItem key={index} track={track} callbackTrack={callbackTrack} type="Delete"></TrackItem>
@@ -52,7 +64,7 @@ const Playlister: React.FC<Props> = ( {playlists, isChanged, tracks, callback} )
 
     return (
         <>
-        <TracksModal isOpen={modalIsOpen} closeModal={toggleModal} tracks={tracks!}></TracksModal>
+        <TracksModal isOpen={modalIsOpen} closeModal={toggleModal} tracks={tracks!} callbackTrack={callbackTrack}></TracksModal>
         <button className="border border-solid bg-gray-700 hover:bg-gray-600" onClick={handleCallback}>Test Callback!</button>
         <button className="border border-solid bg-gray-700 hover:bg-gray-600" onClick={toggleModal}>Test ModalOpen</button>
         <ul className="text-white bg-gray-700 ml-80 mr-80 pt-5 pb-5 mt-10 mb-10">

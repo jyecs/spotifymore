@@ -3,15 +3,11 @@ import TrackItem from "./trackItem";
 interface Props {
     isOpen: boolean;
     closeModal: () => void;
-    tracks: Array<Track>
+    tracks: Array<Track>;
+    callbackTrack: (track: Track, type: string) => void;
 }
 
-const TracksModal:React.FC<Props> = ( {isOpen, closeModal, tracks }) => {
-
-    function callbackTrack(track: Track, type: string) {
-        console.log(track);
-        console.log(type);
-    }
+const TracksModal:React.FC<Props> = ( {isOpen, closeModal, tracks, callbackTrack }) => {
 
     if (!isOpen) { return null }
 

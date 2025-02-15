@@ -12,16 +12,21 @@ const Playlister: React.FC<Props> = ( {playlists, isChanged, tracks, callback} )
     const [listItems, setListItems] = useState<any>(null);
     const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
 
+    function callbackTrack(track: Track, type: string) {
+        console.log(track);
+        console.log(type);
+    }
+
     useEffect(()=> {
         setListItems(playlists ? Array.from(playlists![0][1]).map((track, index) => {
-            return <TrackItem key={index} track={track}></TrackItem>
+            return <TrackItem key={index} track={track} callbackTrack={callbackTrack} type="Delete"></TrackItem>
         }) : null)
         console.log("First Effect Called")
     },[playlists])
 
     useEffect(()=> {
         setListItems(playlists? Array.from(playlists![playlistNum][1]).map((track, index) => {
-            return <TrackItem key={index} track={track}></TrackItem>
+            return <TrackItem key={index} track={track} callbackTrack={callbackTrack} type="Delete"></TrackItem>
         }) : null)
     },[playlistNum])
 

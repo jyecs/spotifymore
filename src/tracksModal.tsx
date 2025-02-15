@@ -7,6 +7,12 @@ interface Props {
 }
 
 const TracksModal:React.FC<Props> = ( {isOpen, closeModal, tracks }) => {
+
+    function callbackTrack(track: Track, type: string) {
+        console.log(track);
+        console.log(type);
+    }
+
     if (!isOpen) { return null }
 
     return (
@@ -18,7 +24,7 @@ const TracksModal:React.FC<Props> = ( {isOpen, closeModal, tracks }) => {
         <div className="overflow-auto bg-gray-500">
             <ul>
                 {tracks.map((track, index) => {
-                    return <TrackItem track={track} key={index}></TrackItem>
+                    return <TrackItem track={track} key={index} callbackTrack={callbackTrack} type="Add"></TrackItem>
                 })}
             </ul>
         </div>

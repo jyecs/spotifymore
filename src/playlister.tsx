@@ -65,11 +65,13 @@ const Playlister: React.FC<Props> = ( {playlists, isChanged, tracks, callback} )
     return (
         <>
         <TracksModal isOpen={modalIsOpen} closeModal={toggleModal} tracks={tracks!} callbackTrack={callbackTrack}></TracksModal>
-        <ul className="text-white bg-gray-700 ml-80 mr-80 pt-5 pb-5 mt-10 mb-10">
-            <div className="flex flex-row space-evenly items-center justify-center gap-10">
+        <ul className="text-white bg-gray-700 pt-15 pb-15 pl-90 pr-90">
+            <div className="flex flex-row space-evenly items-center justify-center gap-10 mb-10">
+            <button className = "border border-solid border-white hover:bg-gray-600 mb-3 pl-3 pr-3" onClick={toggleModal}>Add Songs</button>
                 <button className = "border border-solid border-white hover:bg-gray-600 mb-3 pl-3 pr-3" onClick={handleClick}>Prev</button>
                 <div className="text-center text-xl mb-3 min-w-30 max-w-30">{playlists ? playlists[playlistNum][0] : null}</div>
                 <button className = "border border-solid border-white hover:bg-gray-600 mb-3 pl-3 pr-3" onClick={handleClick}>Next</button>
+                <button className = "border border-solid border-white hover:bg-gray-600 mb-3 pl-3 pr-3" onClick={handleCallback}>Listify!</button>
             </div>
             {listItems}
         </ul>

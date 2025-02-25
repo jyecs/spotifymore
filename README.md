@@ -15,4 +15,8 @@ Done'd:
 - Menu to see all saved songs
 
 WiP:
-- Cap API calls to a max of 20 for getting tracks (1000 songs total)
+- Cap API calls to a max of 20 for getting tracks (1000 songs total).
+- Add modals to send msgs on edits so there is feedback.
+- Add modal to listfy button so there isn't accidental commits to the spotify app.
+- Finish the landing page.
+- Error handling.

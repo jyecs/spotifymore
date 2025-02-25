@@ -8,10 +8,14 @@ interface Props {
 const Landing: React.FC<Props> = ({isChanged, isLoading, callback}) => {
 
   const aboutSectionRef = useRef<HTMLDivElement>(null);
-  // const FAQSectionRef = useRef(null);
+  const FAQSectionRef = useRef<HTMLDivElement>(null);
 
   const scrollToAbout = () => {
-    aboutSectionRef.current?.scrollIntoView({behavior: "smooth"})
+    aboutSectionRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
+
+  const scrollToFAQ = () => {
+    FAQSectionRef.current?.scrollIntoView({ behavior: "smooth" })
   }
 
   if(isLoading || isChanged) {
@@ -23,16 +27,16 @@ const Landing: React.FC<Props> = ({isChanged, isLoading, callback}) => {
       <header className='grid grid-cols-10 grid-rows-none bg-black text-white gap-2 text-xl m-5 pr-40 pl-40'>
         <p className='justify-self-center'>Listify</p>
         <p onClick={scrollToAbout} className='justify-self-end col-start-8 row-start-1'>About</p>
-        <p className='justify-self-center col-start-9 row-start-1'>FAQ</p>
+        <p onClick={scrollToFAQ} className='justify-self-center col-start-9 row-start-1'>FAQ</p>
         <a href="https://github.com/jyecs" className='justify-self-start col-start-10 row-start-1'>GitHub</a>
       </header>
       <hr className='p-[1px 0px 0px 10px] w-full bg-gray-700 h-[2px] mb-30'></hr>
       <div className='flex flex-col text-white h-screen gap-2 items-center content-center'>
         <h1 className='font-bold text-[60px]'>Load. Tailor. Listen.</h1>
-        <p className='text-4x1'>Quickly create playlists from your favorite songs on Spotify.</p>
+        <p className='text-4x1 mb-3'>Quickly create playlists from your favorite songs on Spotify.</p>
         <button className='bg-green-600 h-12 w-30 rounded-3xl hover:bg-green-700' onClick={callback}>Get Started</button>
       </div>
-      <div ref={aboutSectionRef} className='pl-60 pr-60 bg-gray-900'>
+      <div ref={FAQSectionRef} className='pl-60 pr-60 bg-gray-900'>
         <div className='flex flex-col text-white h-screen gap-4 items-center content-center bg-gray-900 pr-60 pl-60 pt-45'>
           <h1 className='font-bold text-[60px]'>FAQ</h1>
           <h2 className='text-2xl'>How does Listify work?</h2>
@@ -40,11 +44,15 @@ const Landing: React.FC<Props> = ({isChanged, isLoading, callback}) => {
           <h2 className='text-2xl'>How come some songs don't show up in any playlist?</h2>
           <p className='text-center text-gray-400'>We categorize songs through genre by proxy of their artist's genre. However some artists don't have genres associated with them, even some well known artists such as Imagine Dragons do not have a genre associated with them.</p>
           <h2 className='text-2xl'>How come it says that I can't use Listify?</h2>
-          <p className='text-center text-gray-400'>Until this app gets an extended quota status from Spotify, you must be whitelisted in order to use.</p>
+          <p className='text-center text-gray-400'>Until this app gets an extended quota status from Spotify, you must be whitelisted in order to use Listify.</p>
           <h2 className='text-2xl'>Is this app associated with Spotify?</h2>
           <p className='text-center text-gray-400'>While we use their API, Listify is not associated in anyway with Spotify</p>
         </div>
       </div>
+      <div ref={aboutSectionRef}className="flex flex-col text-white h-screen  gap-2 bg-black items-center content-center pr-100 pl-100 pt-45">
+          <h1 className="font-bold text-[60px]">About</h1>
+          <p className="text-center text-xl">Listify is a simple, free-to-use tool that quickly creates playlists for you based on your like songs. Tune them to your liking before uploading directly to Spotify in one click!</p>
+        </div>
     </div>)
 }
 

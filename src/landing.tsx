@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useRef } from "react"
 interface Props {
   isChanged: boolean;
   isLoading: boolean
@@ -6,6 +6,14 @@ interface Props {
 }
 
 const Landing: React.FC<Props> = ({isChanged, isLoading, callback}) => {
+
+  const aboutSectionRef = useRef<HTMLDivElement>(null);
+  // const FAQSectionRef = useRef(null);
+
+  const scrollToAbout = () => {
+    aboutSectionRef.current?.scrollIntoView({behavior: "smooth"})
+  }
+
   if(isLoading || isChanged) {
     return null;
   }
@@ -14,9 +22,9 @@ const Landing: React.FC<Props> = ({isChanged, isLoading, callback}) => {
     <div className=''>
       <header className='grid grid-cols-10 grid-rows-none bg-black text-white gap-2 text-xl m-5 pr-40 pl-40'>
         <p className='justify-self-center'>Listify</p>
-        <p className='justify-self-end col-start-8 row-start-1'>About</p>
+        <p onClick={scrollToAbout} className='justify-self-end col-start-8 row-start-1'>About</p>
         <p className='justify-self-center col-start-9 row-start-1'>FAQ</p>
-        <p className='justify-self-start col-start-10 row-start-1'>GitHub</p>
+        <a href="https://github.com/jyecs" className='justify-self-start col-start-10 row-start-1'>GitHub</a>
       </header>
       <hr className='p-[1px 0px 0px 10px] w-full bg-gray-700 h-[2px] mb-30'></hr>
       <div className='flex flex-col text-white h-screen gap-2 items-center content-center'>
@@ -24,7 +32,7 @@ const Landing: React.FC<Props> = ({isChanged, isLoading, callback}) => {
         <p className='text-4x1'>Quickly create playlists from your favorite songs on Spotify.</p>
         <button className='bg-green-600 h-12 w-30 rounded-3xl hover:bg-green-700' onClick={callback}>Get Started</button>
       </div>
-      <div className='pl-60 pr-60 bg-gray-900'>
+      <div ref={aboutSectionRef} className='pl-60 pr-60 bg-gray-900'>
         <div className='flex flex-col text-white h-screen gap-4 items-center content-center bg-gray-900 pr-60 pl-60 pt-45'>
           <h1 className='font-bold text-[60px]'>FAQ</h1>
           <h2 className='text-2xl'>How does Listify work?</h2>

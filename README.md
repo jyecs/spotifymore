@@ -20,3 +20,4 @@ WiP:
 - Add modal to listfy button so there isn't accidental commits to the spotify app.
 - Finish the landing page.
 - Error handling.
+- Fix vercel callback error (configure vercel to handle this)

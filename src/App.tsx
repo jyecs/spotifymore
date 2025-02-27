@@ -25,6 +25,7 @@ function App() {
     const code = params.get("code");
     if (code) {
       async function getAccess() {
+        console.log("Attempted to get access token");
         if (accessRef.current) { return }
         const token = await spotifyRef.current.getAccessToken(code!)
         if (token) {
@@ -40,6 +41,7 @@ function App() {
   useEffect(() => {
     if (accessToken) {
       async function getSongsFromSpotify() {
+        console.log("Attempted to get songs.")
         setLoadingMessage("Getting Songs from Your Profile...");
         const songs = await spotifyRef.current.getSongs(accessRef.current!);
         setTrackList(songs);
@@ -52,6 +54,7 @@ function App() {
     if (trackList) {
       console.log(trackList);
       async function getArtistsFromSpotify() {
+        console.log("Attempted to create playlists.")
         if (artistList) { return } // don't want to call the API more times than needed
         setLoadingMessage("Creating playlists...")
         const artistIterator = spotifyRef.current.getAllTracklistArtists(trackList!).values();

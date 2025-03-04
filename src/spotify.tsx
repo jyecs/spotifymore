@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 function spotify() {
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT;
 
-const [verifierSave, setVerifier] = useState<string | null>(null);
+const [verifierSave, setVerifier] = useState<string | null>("Something went wrong!");
 
 useEffect(() => {
     setVerifier(localStorage.getItem("verifier"));

@@ -7,6 +7,7 @@ async function redirectToAuthCodeFlow(clientId: string) {
     const challenge = await generateCodeChallenge(verifier);
 
     localStorage.setItem("verifier", verifier);
+    console.log(localStorage.getItem("verifier"));
 
     const params = new URLSearchParams();
     params.append("client_id", clientId);

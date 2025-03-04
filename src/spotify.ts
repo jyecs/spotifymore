@@ -41,6 +41,7 @@ async function generateCodeChallenge(codeVerifier: string) {
 }
 
 async function getAccessToken(code: string): Promise<string> {
+    console.log(localStorage.getItem("verifier"));
     const verifier = localStorage.getItem("verifier");
 
     const params = new URLSearchParams();

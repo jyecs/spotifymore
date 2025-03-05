@@ -1,5 +1,4 @@
 import { Track,FetchedSongs, SavedTrackObject, FetchedArtists, ArtistObject, UserProfile, SpotifyPlaylist} from "./vite-env";
-import { useEffect, useState } from "react";
 function spotify() {
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT;
 

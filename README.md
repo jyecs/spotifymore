@@ -13,11 +13,11 @@ Done'd:
 - Ability to change the playlist data <- Using the modal created.
 - Rework playlister.tsx such that it can handle mutations in state while properly rendering out state
 - Menu to see all saved songs
+- Fix vercel callback error (configure vercel to handle this) <- verifier does not persist upon loading back from vercel, need to handle this
+- Finish the landing page.
 
 WiP:
 - Cap API calls to a max of 20 for getting tracks (1000 songs total).
 - Add modals to send msgs on edits so there is feedback.
 - Add modal to listfy button so there isn't accidental commits to the spotify app.
-- Finish the landing page.
 - Error handling.
-- Fix vercel callback error (configure vercel to handle this) <- verifier does not persist upon loading back from vercel, need to handle this

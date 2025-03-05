@@ -3,17 +3,11 @@ import { useEffect, useState } from "react";
 function spotify() {
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT;
 
-const [verifierSave, setVerifier] = useState<string | null>("Something went wrong!");
-
-useEffect(() => {
-    setVerifier(localStorage.getItem("verifier"));
-},[])
-
 async function redirectToAuthCodeFlow(clientId: string) {
     const verifier = generateCodeVerifier(128);
     const challenge = await generateCodeChallenge(verifier);
 
-    localStorage.setItem("verifier", verifier);
+    sessionStorage.setItem("verifier", verifier);
 
     const params = new URLSearchParams();
     params.append("client_id", clientId);
@@ -46,7 +40,7 @@ async function generateCodeChallenge(codeVerifier: string) {
 }
 
 async function getAccessToken(code: string): Promise<string> {
-    const verifier = verifierSave;
+    const verifier = sessionStorage.getItem("verifier");
 
     const params = new URLSearchParams();
     params.append("client_id", clientId);

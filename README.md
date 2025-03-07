@@ -1,5 +1,7 @@
 # Spotify Playlist Creator
 
+If you run to any problems with connecting spotify account, it means that this app has not gotten an extension yet, and is required to be whitelisted in order to use
+
 Done'd:
 - Setting up connection to Spotify API using OAuth 2.0 (Only people whitelisted can use it...)
 - Gets all of your saved songs (ones that you explicity liked, not just in a playlist)

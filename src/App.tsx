@@ -38,10 +38,10 @@ function App() {
     }
   }, [])
 
+  // When access is obtained, fetch songs.
   useEffect(() => {
     if (accessToken) {
       async function getSongsFromSpotify() {
-        console.log("Attempted to get songs.")
         setLoadingMessage("Getting Songs from Your Profile...");
         const songs = await spotifyRef.current.getSongs(accessRef.current!);
         setTrackList(songs);
@@ -50,11 +50,10 @@ function App() {
     }
   }, [accessToken])
 
+  // When songs are fetched, fetch artist data for genre data.
   useEffect(() => {
     if (trackList) {
-      console.log(trackList);
       async function getArtistsFromSpotify() {
-        console.log("Attempted to create playlists.")
         if (artistList) { return } // don't want to call the API more times than needed
         setLoadingMessage("Creating playlists...")
         const artistIterator = spotifyRef.current.getAllTracklistArtists(trackList!).values();
@@ -66,9 +65,9 @@ function App() {
     }
   }, [trackList])
 
+  // When artists are fetched, process all data into playlists and change view to playlist view.
   useEffect(() => {
     if (artistList) {
-      console.log(artistList);
       const playlists = playlistRef.current.createPlaylists(trackList! ,artistList);
       const playlistEntries = Array.from(playlists.entries());
       playlistEntries.sort((a,b) => b[1].size - a[1].size);
@@ -78,19 +77,19 @@ function App() {
     }
   },[artistList])
 
-  function callbackTest() {
+  // Starts listfy by first geting perms from Spotify using OAuth
+  function startApplication() {
     spotifyRef.current.getAuthorization();
   }
 
+  // Calls Spotify API to add playlist.
   async function handlePlaylistAdd(genre: string, tracks: Set<Track>) {
-    console.log(genre);
-    console.log(tracks);
     console.log( await spotifyRef.current.putPlaylistToSpotify(accessRef.current!, genre, tracks));
   }
 
   return (
     <>
-      <Landing isChanged={changed} isLoading= {isloading} callback={callbackTest} ></Landing>
+      <Landing isChanged={changed} isLoading= {isloading} callback={startApplication} ></Landing>
       <LoadingPage isLoading={isloading} msg={loadingMessage}></LoadingPage>
       <Playlister isChanged={changed} playlists={playlists} tracks={trackList} callback={handlePlaylistAdd}></Playlister>
     </>

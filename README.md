@@ -17,6 +17,7 @@ Done'd:
 - Menu to see all saved songs
 - Fix vercel callback error (configure vercel to handle this) <- verifier does not persist upon loading back from vercel, need to handle this
 - Finish the landing page.
+- Added some basic comments for future reference
 
 WiP:
 - Cap API calls to a max of 20 for getting tracks (1000 songs total).

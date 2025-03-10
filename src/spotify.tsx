@@ -3,7 +3,7 @@ function spotify() {
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT;
 
 const redirectUri = "https://listify-git-main-jyecs-projects.vercel.app/callback";
-// const redirectUru = "http://localhost:5173/callback"
+// const redirectUri = "http://localhost:5173/callback"
 
 async function redirectToAuthCodeFlow(clientId: string) {
     const verifier = generateCodeVerifier(128);
@@ -72,7 +72,6 @@ async function fetchProfile(token: string): Promise<UserProfile> {
 async function putPlaylistToSpotify(token: string, playlistName: string, tracks: Set<Track>) {
     const profile = await fetchProfile(token);
     const id = profile.id;
-    console.log(playlistName);
     const playlist = await createPlaylist(token, id, playlistName);
     const playlistID = playlist.id;
     await putTracksToPlaylist(token, playlistID, tracks);
@@ -93,6 +92,7 @@ async function createPlaylist(token: string, id: string, playlistName: string): 
     return await result.json();
 }
 
+// Inserts tracks into playlist that was just created
 async function putTracksToPlaylist(token: string, playlistID: string, tracks: Set<Track>) {
     const trackStrings = new Array<Array<String>>();
     const tracksIterable = tracks.keys()
@@ -127,6 +127,7 @@ async function putTracks(token: string, playlistID: string, uris: Array<String>)
     return await result.json(); // Don't need this could treat as a void function
 }
 
+// This whole set of functions recursively fetchs from spotify tracks api since we are limited to 50 tracks per call
 async function fetchSavedTracks(token: string) {
     const params = new URLSearchParams();
     let items = new Array<FetchedSongs>();
@@ -164,6 +165,7 @@ async function getSongs(accessToken: string): Promise<Track[]> {
     return listOfAllTracks;
 }
 
+// Extracts tracks data from FetchedSong object to be used
 function processTracks(ListOfTracks: Array<FetchedSongs>): Track[] {
     const allSongs = new Array<Track>();
     ListOfTracks.forEach((list: FetchedSongs) => {
@@ -188,6 +190,7 @@ function getAllTracklistArtists(tracks: Track[]): Map<string,string> {
     return artists;
 }
 
+// Concats multiple strings into blocks of 50 to be consumed by Artists API from Spotify.
 function convertArtistsToCallableArray(artistIDs: IterableIterator<string>) {
     let arrayOfArtists = new Array<string>();
     let concatedArtists = new Array<string>();
@@ -204,6 +207,8 @@ function convertArtistsToCallableArray(artistIDs: IterableIterator<string>) {
     return concatedArtists;
 }
 
+
+// Note: I think I actually should have swapped the 2 function names (keeping for future reference)
 async function fetchArtists(concatedAritsts: string[], token: string): Promise<Map<string, ArtistObject>> {
     const artists = new Map<string, ArtistObject>();
     for (let i = 0; i < concatedAritsts.length; i++) {
